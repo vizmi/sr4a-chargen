@@ -1,40 +1,36 @@
-import { redirect } from '@sveltejs/kit';
 import { OAuth2Client } from 'google-auth-library';
+import { SECRET_CLIENT_ID } from '$env/static/private';
 
-import {SECRET_CLIENT_ID,SECRET_CLIENT_SECRET} from '$env/static/private';
+export const POST = async ({ request }) => {
+	console.debug('Credential received');
+	const contentType = request.headers.get('content-type');
+	if (!contentType || !contentType.includes('application/x-www-form-urlencoded')) {
+		console.error('Invalid content type');
+		return new Response('Invalid content type', { status: 400 });
+	}
+	const formData = await request.formData();
+	if (!formData || !formData.has('credential')) {
+		console.error('Invalid form data', formData);
+		return new Response('Invalid form data', { status: 400 });
+	}
+	const credential = formData.get('credential');
+	try {
+		const client = new OAuth2Client();
+		const ticket = await client.verifyIdToken({
+			idToken: credential,
+			audience: SECRET_CLIENT_ID
+		});
+		const payload = ticket.getPayload();
 
-async function getUserData(access_token) {
+		const sub = payload['sub'];
+		const email = payload['email'];
+		const name = payload['name'];
 
-  const response = await fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`);
-  const data = await response.json();
-  console.log('data',data);
-}
-
-export const GET = async ({ url}) => {
-    const redirectURL = 'http://localhost:5173/oauth';
-    const code = await url.searchParams.get('code');
-
-    console.log('returned code',code)
-
-    try {
-        const oAuth2Client = new OAuth2Client(
-          SECRET_CLIENT_ID,
-          SECRET_CLIENT_SECRET,
-            redirectURL
-          );
-        const r = await oAuth2Client.getToken(code);
-        // Make sure to set the credentials on the OAuth2 client.
-        oAuth2Client.setCredentials(r.tokens);
-        console.info('Tokens acquired.');
-        const user = oAuth2Client.credentials;
-        console.log('credentials',user);
-
-        await getUserData(user.access_token);
-
-
-      } catch (err) {
-        console.log('Error logging in with OAuth2 user', err);
-    }
-
-    throw redirect(303, '/');
+		const message = `sub: ${sub}; email: ${email}; name: ${name}`;
+		console.debug(message);
+		return new Response(message, { status: 200 });
+	} catch (error) {
+		console.error('OAuthClient error', error);
+		return new Response('Error', { status: 500 });
+	}
 };
