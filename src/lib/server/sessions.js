@@ -29,40 +29,37 @@ export function createSession(token, user, expiresAt) {
 }
 
 export async function validateSessionToken(token) {
-	console.log('validateSessionToken', token);
+	console.debug('validateSessionToken', token);
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 	const session = sessions.get(sessionId);
-	console.log('session', session);
 	if (!session) {
+		console.debug('Session cannot be found');
 		return null;
 	}
-	console.log('session.expiresAt', session.expiresAt);
 	if (Date.now() >= session.expiresAt) {
 		sessions.delete(sessionId);
+		console.debug('Session has expired');
 		return null;
 	}
-	console.log('session', session);
+	console.debug('Session is valid');
 	return session;
 }
 
 export async function invalidateSession(sessionId) {
-	console.log('Attempting to invalidate session:', sessionId);
+	console.debug('Attempting to invalidate session:', sessionId);
 	const sessionExists = sessions.has(sessionId);
-	console.log('Session exists?:', sessionExists);
-	if (sessionExists) {
-		const session = sessions.get(sessionId);
-		console.log('Session being deleted:', session);
+	console.debug('Session exists?:', sessionExists);
+	if (!sessionExists) {
+		console.debug('Session cannot be found');
+		return;
 	}
 	sessions.delete(sessionId);
-	console.log('Session map size after deletion:', sessions.size);
+	console.debug('Session has been deleted: ', sessionId);
 }
 
 export async function invalidateAllSessions(userId) {
-	const sessionsToDelete = [];
-	sessions.forEach((session, sessionId) => {
-		if (session.userId === userId) {
-			sessionsToDelete.push(sessionId);
-		}
-	});
-	sessionsToDelete.forEach((sessionId) => sessions.delete(sessionId));
+	Array.from(sessions)
+		.filter(([, session]) => session.user.id === userId)
+		.map(([sessionId]) => sessionId)
+		.forEach((sessionId) => invalidateSession(sessionId));
 }

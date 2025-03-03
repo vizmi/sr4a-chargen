@@ -6,7 +6,7 @@
 <div class="user-profile">
 	<img src={data.user.picture} alt="Profile of {data.user.given_name}" class="profile-picture" />
 	<div class="user-info">
-		<h2>{data.user.name}</h2>
+		<h2>{data.user.given_name}</h2>
 		<p>{data.user.email}</p>
 	</div>
 </div>

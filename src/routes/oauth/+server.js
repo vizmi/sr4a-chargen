@@ -24,7 +24,6 @@ export const POST = async ({ request, cookies }) => {
 			audience: SECRET_CLIENT_ID
 		});
 		const payload = ticket.getPayload();
-		console.debug('Payload', payload);
 
 		const user = {
 			sub: payload['sub'],
