@@ -1,12 +1,10 @@
 <script>
 	import { PUBLIC_GOOGLE_CLIENT_ID } from '$env/static/public';
+	import { assets } from '$app/paths';
 </script>
 
 <svelte:head>
 	<script src="https://accounts.google.com/gsi/client" async></script>
-	<script>
-		import { assets } from '$app/paths';
-	</script>
 	<style>
 		/* Base styles */
 		body {
