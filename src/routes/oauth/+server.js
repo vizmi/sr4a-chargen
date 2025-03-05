@@ -40,5 +40,5 @@ export const POST = async ({ request, cookies }) => {
 		console.error('OAuthClient error', error);
 		return new Response('Error', { status: 500 });
 	}
-	return redirect(303, '/protected');
+	return redirect(303, '/app');
 };
