@@ -11,7 +11,7 @@
 	id="g_id_onload"
 	data-client_id={PUBLIC_GOOGLE_CLIENT_ID}
 	data-itp_support="true"
-	data-login_uri="http://localhost:5173/oauth"
+	data-login_uri="http://localhost:5173/login"
 ></div>
 <div class="content-container">
 	<h1>Welcome to the Shadows, Chummer!</h1>
