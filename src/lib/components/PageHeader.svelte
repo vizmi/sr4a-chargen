@@ -1,4 +1,5 @@
 <script>
+	import { _ } from 'svelte-i18n';
 	export let user;
 
 	function handleImageError(event) {
@@ -12,7 +13,7 @@
 
 <header class="page-header">
 	<div class="header-content">
-		<div class="brand">SR4A Character Generator</div>
+		<div class="brand">{$_('app.title')}</div>
 		<div class="user-profile">
 			<div class="user-info">
 				<h2>{user.given_name}</h2>
@@ -23,7 +24,7 @@
 				class="profile-picture"
 				on:error={handleImageError}
 			/>
-			<button class="logout-button" on:click={handleLogout}>Logout</button>
+			<button class="logout-button" on:click={handleLogout}>{$_('header.logout')}</button>
 		</div>
 	</div>
 </header>

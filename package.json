@@ -29,6 +29,7 @@
 	"dependencies": {
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
-		"google-auth-library": "^9.15.1"
+		"google-auth-library": "^9.15.1",
+		"svelte-i18n": "^4.0.1"
 	}
 }
